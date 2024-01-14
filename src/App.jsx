@@ -1,35 +1,64 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React from 'react';
+import './App.css';
+import { getRandomAnimalFact } from './utils/api';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [animal, setAnimal] = React.useState('cat');
+  const [animalObjFact, setAnimalObjFact] = React.useState(null);
+
+  function onChangeAnimalVal({ target }) {
+    setAnimal(target.value);
+  }
+
+  React.useEffect(() => {
+    async function fetchData() {
+      try {
+        console.log("ini animal stat ", animal);
+        const factResult = await getRandomAnimalFact(animal);
+        setAnimalObjFact(factResult);
+        console.log(factResult);
+      } catch (error) {
+        console.error('Terjadi kesalahan saat mengambil data hewan:', error);
+      }
+    }
+
+    fetchData();
+  }, [animal]);
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      {/* Komponen Input Value Animal */}
+      <select onChange={onChangeAnimalVal}>
+        <option value="cat">Cat Fact</option>
+        <option value="dog">Dog Fact</option>
+      </select>
+
+      {/* Komponen Output */}
+      <section>
+        <div className='row'>
+          <label>Image</label>
+          <div className='row__content'>
+            {animalObjFact === null ? 
+              <img src="https://via.placeholder.com/600x400" alt="placeholder image" />
+              : 
+              <img src={animalObjFact.image} alt="Animal Image" />
+            }
+          </div>
+        </div>
+
+        <div className='row'>
+          <label>Fact</label>
+          <div className='row__content'>
+            {animalObjFact === null ? 
+              <p>...loading </p>
+              : 
+              <p>{animalObjFact.fact}</p>
+            }
+          </div>
+        </div>
+      </section>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
