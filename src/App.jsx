@@ -1,5 +1,7 @@
 import React from 'react';
 import './App.css';
+import AnimalSelect from './components/AnimalSelectOption';
+import AnimalFactCard from './components/AnimalFactCard';
 import { getRandomAnimalFact } from './utils/api';
 
 function App() {
@@ -23,40 +25,18 @@ function App() {
     }
 
     fetchData();
+
+    return () => {
+      setAnimalObjFact(null);
+    } ;
   }, [animal]);
 
   return (
     <>
-      {/* Komponen Input Value Animal */}
-      <select onChange={onChangeAnimalVal}>
-        <option value="cat">Cat Fact</option>
-        <option value="dog">Dog Fact</option>
-      </select>
-
+      <AnimalSelect onChangeAnimalHandler={onChangeAnimalVal} />
       {/* Komponen Output */}
-      <section>
-        <div className='row'>
-          <label>Image</label>
-          <div className='row__content'>
-            {animalObjFact === null ? 
-              <img src="https://via.placeholder.com/600x400" alt="placeholder image" />
-              : 
-              <img src={animalObjFact.image} alt="Animal Image" />
-            }
-          </div>
-        </div>
-
-        <div className='row'>
-          <label>Fact</label>
-          <div className='row__content'>
-            {animalObjFact === null ? 
-              <p>...loading </p>
-              : 
-              <p>{animalObjFact.fact}</p>
-            }
-          </div>
-        </div>
-      </section>
+      <AnimalFactCard animalObjFact={animalObjFact} />
+      
     </>
   );
 }
